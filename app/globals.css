@@ -178,7 +178,7 @@ footer { display:grid; grid-template-columns:1fr auto auto; align-items:center; 
   .brand img { width:44px; height:44px; }
   .brand strong { font-size:15px; }
   .desktop-nav,.header-actions { display:none; }
-  .mobile-admin-entry { display:inline-flex; align-items:center; justify-content:center; border:1px solid rgb(255 255 255 / 55%); border-radius:999px; padding:9px 13px; background:rgb(2 45 44 / 34%); color:white; font-size:12px; font-weight:800; backdrop-filter:blur(9px); }
+  .mobile-admin-entry { display:inline-flex; align-items:center; justify-content:center; border:1px solid rgb(255 255 255 / 70%); border-radius:999px; padding:10px 15px; background:var(--orange); color:white; box-shadow:0 8px 22px rgb(255 106 0 / 36%); font-size:13px; font-weight:900; }
   .hero { min-height:680px; height:88svh; }
   .hero-image { object-position:58% center; }
   .hero-shade { background:linear-gradient(0deg,rgb(1 29 27 / 88%) 0%,rgb(1 29 27 / 26%) 68%,rgb(1 29 27 / 43%) 100%); }
