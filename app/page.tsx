@@ -53,6 +53,7 @@ export default function Home() {
           <a className="admin-entry" href="/admin" aria-label="進入營主管理後台">營主後台</a>
           <a className="header-cta" href="#booking">查詢空位</a>
         </div>
+        <a className="mobile-admin-entry" href="/admin" aria-label="進入營主管理後台">營主後台</a>
       </header>
 
       <section className="hero" id="top" aria-labelledby="hero-title">
