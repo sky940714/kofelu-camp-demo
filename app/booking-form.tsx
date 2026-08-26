@@ -1,12 +1,21 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 export default function BookingForm() {
   const [submitted, setSubmitted] = useState(false);
+  const lineUrl = process.env.NEXT_PUBLIC_LINE_OFFICIAL_URL;
+
+  useEffect(() => {
+    if (!submitted) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = previousOverflow; };
+  }, [submitted]);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); setSubmitted(true); }
-  if (submitted) return <div className="booking-success" role="status"><span>✓</span><h3>預約需求已整理完成</h3><p>目前是網站展示版本，尚未將資料送出。正式上線後會由營區收到需求並回覆空位。</p><button type="button" onClick={() => setSubmitted(false)}>修改預約內容</button></div>;
   return (
+    <>
     <form className="booking-form" onSubmit={handleSubmit}>
       <span className="preview-badge">預約系統預覽</span>
       <div className="field-row"><label>入住日期<input name="checkin" type="date" required /></label><label>住宿晚數<select name="nights" defaultValue="1"><option value="1">1 晚</option><option value="2">2 晚</option><option value="3">3 晚</option></select></label></div>
@@ -18,5 +27,19 @@ export default function BookingForm() {
       <button className="submit-booking" type="submit">整理預約需求 <span>→</span></button>
       <p className="form-note">展示階段不會傳送或儲存任何個人資料。</p>
     </form>
+    {submitted && <div className="booking-modal-backdrop" role="presentation">
+      <section className="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title" aria-describedby="booking-modal-description">
+        <span className="booking-modal-check" aria-hidden="true">✓</span>
+        <small>預約流程展示</small>
+        <h3 id="booking-modal-title">預約申請已送出</h3>
+        <p id="booking-modal-description">接下來將前往可飛鹿官方 LINE，請將預約資訊傳送給營主，以確認實際剩餘位置。</p>
+        <div className="booking-modal-notice"><strong>請注意</strong><span>完成營主確認並支付訂金後，訂位才正式成立。</span></div>
+        {lineUrl
+          ? <a className="booking-line-action" href={lineUrl}>前往官方 LINE 確認位置 <span>→</span></a>
+          : <button className="booking-line-action" type="button" onClick={() => setSubmitted(false)}>展示：前往官方 LINE <span>→</span></button>}
+        <p className="booking-modal-demo">目前為展示版本，尚未連結正式 LINE。</p>
+      </section>
+    </div>}
+    </>
   );
 }
