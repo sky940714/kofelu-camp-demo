@@ -95,7 +95,13 @@ button,input,select,textarea { font:inherit; }
 .booking-modal-notice { display:grid; gap:4px; margin:22px 0; border-radius:13px; padding:13px 15px; background:#fff3df; color:#79541d; text-align:left; }
 .booking-modal-notice strong { font-size:11px; }
 .booking-modal-notice span { font-size:12px; line-height:1.6; }
+.booking-summary { display:grid; gap:0; margin:20px 0 0; overflow:hidden; border:1px solid #dfe5e2; border-radius:14px; background:white; text-align:left; }
+.booking-summary div { display:grid; grid-template-columns:90px 1fr; gap:10px; padding:10px 13px; border-bottom:1px solid #edf0ee; }
+.booking-summary div:last-child { border-bottom:0; }
+.booking-summary dt { color:#7a8b86; font-size:11px; font-weight:800; }
+.booking-summary dd { margin:0; color:var(--pine); font-size:12px; font-weight:800; overflow-wrap:anywhere; }
 .booking-line-action { display:flex; width:100%; align-items:center; justify-content:space-between; border:0; border-radius:14px; padding:16px 18px; background:#06c755; color:white; cursor:pointer; font-weight:900; box-shadow:0 12px 28px rgb(6 199 85 / 20%); }
+.booking-modal-edit { margin-top:14px; border:0; background:transparent; color:#5d706b; cursor:pointer; font-size:12px; font-weight:800; }
 .booking-modal .booking-modal-demo { margin-top:12px; color:#98a39f; font-size:10px; }
 .booking-success { align-self:start; padding:55px 40px; border-radius:26px; background:white; text-align:center; box-shadow:0 24px 60px rgb(18 52 48 / 9%); }
 .booking-success > span { display:grid; width:58px; height:58px; margin:auto; place-items:center; border-radius:50%; background:#e1f5ed; color:#168161; font-size:28px; }
