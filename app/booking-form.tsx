@@ -34,7 +34,7 @@ function buildLineUrl(booking: BookingDraft) {
     `手機：${booking.phone}`,
     `備註：${booking.note || '無'}`,
     '',
-    '我了解此訊息僅為預約申請，須經營區確認空位及支付 30% 訂金後才正式成立。',
+    '我了解此訊息僅為預約申請，須經營區確認空位及支付 50% 訂金後才正式成立。',
   ].join('\n');
 
   return `https://line.me/R/oaMessage/${encodeURIComponent(lineOfficialId)}/?${encodeURIComponent(message)}`;
@@ -92,7 +92,7 @@ export default function BookingForm() {
             <div><dt>人數／數量</dt><dd>{booking.guests} 人・{booking.units} 帳／房</dd></div>
             <div><dt>聯絡人</dt><dd>{booking.name}・{booking.phone}</dd></div>
           </dl>
-          <div className="booking-modal-notice"><strong>請注意</strong><span>前往 LINE 後仍須由您按下傳送；經營區確認空位並支付 30% 訂金後，訂位才正式成立。</span></div>
+          <div className="booking-modal-notice"><strong>請注意</strong><span>前往 LINE 後仍須由您按下傳送；經營區確認空位並支付 50% 訂金後，訂位才正式成立。</span></div>
           <a className="booking-line-action" href={lineUrl}>前往官方 LINE 傳送 <span>→</span></a>
           <button className="booking-modal-edit" type="button" onClick={() => setBooking(null)}>返回修改資料</button>
         </section>

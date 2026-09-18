@@ -20,7 +20,7 @@ const faqs = [
   ['自搭帳的入住與離場時間？', '一般假日 11:00 後進場，隔日 12:00 前離場；連續假日的第二天起為 14:00 後進場、隔日 11:00 前離場。'],
   ['可以攜帶寵物嗎？', '自搭帳可以攜帶寵物，請全程繫繩或安置於籠內並維護清潔；免裝備露營屋室內禁止寵物進入。'],
   ['營位可以停車嗎？', '一般營位採集中停車，每一營位包含一個停車位，營區提供推車搬運裝備；另設有 4 個露營車專用營位，車型、尺寸與設備需求請於預約時先行確認。'],
-  ['預約後需要支付多少訂金？', '預約由營區確認後需支付 30% 訂金。付款方式、保留期限與退款規則將在確認通知中完整說明。'],
+  ['預約後需要支付多少訂金？', '預約由營區確認後需支付 50% 訂金。付款方式、保留期限與退款規則將在確認通知中完整說明。'],
 ];
 
 const structuredData = {
@@ -92,7 +92,7 @@ export default function Home() {
       </section>
 
       <section className="booking-section" id="booking" aria-labelledby="booking-title">
-        <div className="booking-copy"><p className="section-kicker">BOOK YOUR ESCAPE</p><h2 id="booking-title">下一次出走，<br />從選一個日期開始。</h2><p>選擇入住日期與想要的空間，留下聯絡資訊。第一階段採人工確認，避免熱門日期或團露需求重複預訂。</p><div className="booking-steps"><span><b>01</b>送出預約需求</span><span><b>02</b>營區確認空位</span><span><b>03</b>支付 30% 訂金</span></div></div>
+        <div className="booking-copy"><p className="section-kicker">BOOK YOUR ESCAPE</p><h2 id="booking-title">下一次出走，<br />從選一個日期開始。</h2><p>選擇入住日期與想要的空間，留下聯絡資訊。第一階段採人工確認，避免熱門日期或團露需求重複預訂。</p><div className="booking-steps"><span><b>01</b>送出預約需求</span><span><b>02</b>營區確認空位</span><span><b>03</b>支付 50% 訂金</span></div></div>
         <BookingForm />
       </section>
 
