@@ -1,4 +1,6 @@
 import BookingForm from './booking-form';
+import MobileNavigation from './mobile-navigation';
+import SiteInteractions from './site-interactions';
 
 const highlights = [
   { value: '301–500m', label: '山林海拔' },
@@ -16,7 +18,7 @@ const stays = [
 const facilities = ['親子戲水池', '遮陽玩沙坑', '林蔭吊床與鞦韆', '男女分區親子衛浴', '冷藏冷凍與飲水機', '每帳獨立電源'];
 
 const faqs = [
-  ['營區什麼時間開放？', '目前主要開放星期六、連假與年假；星期日至星期五滿 10 帳以上可洽詢包區。特殊休園日與可預約日期請以預約頁顯示為準。'],
+  ['營區什麼時間開放？', '目前主要開放週末、連假與年假；星期一至星期五須滿 10 帳以上才開放預約，自搭帳與租帳篷皆適用。租帳價格將另行公告，特殊休園日與實際可預約日期以營區確認為準。'],
   ['自搭帳的入住與離場時間？', '一般假日 11:00 後進場，隔日 12:00 前離場；連續假日的第二天起為 14:00 後進場、隔日 11:00 前離場。'],
   ['可以攜帶寵物嗎？', '自搭帳可以攜帶寵物，請全程繫繩或安置於籠內並維護清潔；免裝備露營屋室內禁止寵物進入。'],
   ['營位可以停車嗎？', '一般營位採集中停車，每一營位包含一個停車位，營區提供推車搬運裝備；另設有 4 個露營車專用營位，車型、尺寸與設備需求請於預約時先行確認。'],
@@ -40,11 +42,12 @@ const structuredData = {
 export default function Home() {
   return (
     <main>
+      <SiteInteractions />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
       <header className="site-header">
         <a className="brand" href="#top" aria-label="可飛鹿營區首頁">
           <img src="/kofelu-logo.png" alt="" width="52" height="52" />
-          <span><strong>可飛鹿營區</strong><small>COFELU CAMP</small></span>
+          <span><strong>可飛鹿營區</strong><small>COFELU · MOUNTAIN CAMP</small></span>
         </a>
         <nav className="desktop-nav" aria-label="主要導覽">
           <a href="#story">關於營區</a><a href="#stay">營位與房型</a><a href="#facilities">設施體驗</a><a href="#faq">入住須知</a>
@@ -53,23 +56,23 @@ export default function Home() {
           <a className="admin-entry" href="/admin" aria-label="進入營主管理後台">營主後台</a>
           <a className="header-cta" href="#booking">查詢空位</a>
         </div>
-        <a className="mobile-admin-entry" href="/admin" aria-label="進入營主管理後台">營主後台</a>
+        <MobileNavigation />
       </header>
 
       <section className="hero" id="top" aria-labelledby="hero-title">
         <img className="hero-image" src="/hero-camp.jpg" alt="夜幕下的可飛鹿營區，帳篷與樹林在暖色燈光中相映" fetchPriority="high" />
         <div className="hero-shade" />
         <div className="hero-content">
-          <p className="eyebrow">桃園復興 · 羅馬公路 52.3K</p>
-          <h1 id="hero-title">走進山裡，<br />住進一晚好風景。</h1>
+          <p className="eyebrow">COFELU CAMP · TAOYUAN</p>
+          <h1 id="hero-title">走進山裡，<br /><em>住進一晚好風景。</em></h1>
           <p className="hero-copy">從草地露營到免裝備小屋，讓第一次露營的你，也能自在享受一家人的山林假期。</p>
           <div className="hero-actions"><a className="button button-primary" href="#booking">立即查詢空位</a><a className="button button-ghost" href="#story">探索可飛鹿</a></div>
         </div>
-        <p className="hero-note">團露大空間 · 親子共遊 · 免裝備入住</p>
+        <p className="hero-note"><span>24°47' N</span>團露大空間 · 親子共遊 · 免裝備入住</p>
       </section>
 
       <section className="intro" id="story" aria-labelledby="story-title">
-        <div className="intro-heading"><p className="section-kicker">WELCOME TO COFELU</p><h2 id="story-title">山明水秀，<br />把日常留在山下。</h2></div>
+        <div className="intro-heading"><p className="section-kicker">WELCOME TO COFELU</p><h2 id="story-title">山明水秀，<br /><em>把日常留在山下。</em></h2></div>
         <div className="intro-body"><p>Cofelu 是泰雅族語，源自水鹿與山羌曾經聚集的地方。營區緊鄰桃118線羅馬公路，沿著山勢分層規劃，保留每一區自在呼吸的距離。</p><p>帶上自己的帳篷，或輕裝入住露營小屋。孩子在草地奔跑，大人在樹影下慢慢坐著，入夜後一起看山色沉進星光裡。</p></div>
         <div className="highlights" aria-label="營區特色數據">{highlights.map((item) => <div className="highlight" key={item.label}><strong>{item.value}</strong><span>{item.label}</span></div>)}</div>
       </section>
