@@ -1,18 +1,12 @@
 import BookingForm from './booking-form';
 import MobileNavigation from './mobile-navigation';
 import SiteInteractions from './site-interactions';
+import { HeroCarousel, StayExplorer } from './camp-showcase';
 
 const highlights = [
   { value: '301–500m', label: '山林海拔' },
   { value: '72 帳', label: '草皮露營空間' },
   { value: '12 間', label: '2–6 人露營屋' },
-];
-
-const stays = [
-  { tag: '帶著自己的家', title: '草皮露營', detail: 'A–L 區｜6 × 8 公尺', price: '假日 NT$1,200 起', image: '/lookout.jpg', alt: '可飛鹿營區寬廣草地與木造瞭望台' },
-  { tag: '兩人慢旅行', title: '2 人露營屋', detail: '獨立衛浴・冷氣・景觀露臺', price: '假日 NT$2,800 起', image: '/room-2.jpg', alt: '可飛鹿營區二人露營屋房型與露臺介紹' },
-  { tag: '全家輕鬆住', title: '4–6 人露營屋', detail: '床寢具・冰箱・戶外炊煮區', price: '假日 NT$4,200 起', image: '/room-6.jpg', alt: '可飛鹿營區六人露營屋房型與景觀露臺介紹' },
-  { tag: '開著自己的家', title: '露營車營位', detail: '限定 4 個專屬營位', price: '價格請洽營區確認', image: '/hero-camp.jpg', alt: '可飛鹿營區山林露營空間' },
 ];
 
 const facilities = ['親子戲水池', '遮陽玩沙坑', '林蔭吊床與鞦韆', '男女分區親子衛浴', '冷藏冷凍與飲水機', '每帳獨立電源'];
@@ -31,7 +25,7 @@ const structuredData = {
   name: '可飛鹿營區',
   alternateName: 'Cofelu Camp',
   description: '位於桃園復興羅馬公路的親子露營區，提供草皮營位、團體露營與2至6人免裝備露營屋。',
-  image: ['/hero-camp.jpg', '/lookout.jpg', '/room-2.jpg'],
+  image: ['/camp-gallery/980014_0.jpg', '/camp-gallery/980015_0.jpg', '/camp-gallery/980007_0.jpg'],
   priceRange: 'NT$1,200–NT$5,600',
   address: { '@type': 'PostalAddress', streetAddress: '奎輝2鄰12號之3（桃118線羅馬公路52.3公里處）', addressLocality: '復興區', addressRegion: '桃園市', addressCountry: 'TW' },
   geo: { '@type': 'GeoCoordinates', latitude: 24.798452, longitude: 121.329184 },
@@ -50,7 +44,7 @@ export default function Home() {
           <span><strong>可飛鹿營區</strong><small>COFELU · MOUNTAIN CAMP</small></span>
         </a>
         <nav className="desktop-nav" aria-label="主要導覽">
-          <a href="#story">關於營區</a><a href="#stay">營位與房型</a><a href="#facilities">設施體驗</a><a href="#faq">入住須知</a>
+          <a href="#booking">線上預約</a><a href="#stay">營位與房型</a><a href="#facilities">設施體驗</a><a href="#faq">入住須知</a>
         </nav>
         <div className="header-actions">
           <a className="admin-entry" href="/admin" aria-label="進入營主管理後台">營主後台</a>
@@ -60,16 +54,23 @@ export default function Home() {
       </header>
 
       <section className="hero" id="top" aria-labelledby="hero-title">
-        <img className="hero-image" src="/hero-camp.jpg" alt="夜幕下的可飛鹿營區，帳篷與樹林在暖色燈光中相映" fetchPriority="high" />
+        <HeroCarousel />
         <div className="hero-shade" />
         <div className="hero-content">
           <p className="eyebrow">COFELU CAMP · TAOYUAN</p>
           <h1 id="hero-title">走進山裡，<br /><em>住進一晚好風景。</em></h1>
           <p className="hero-copy">從草地露營到免裝備小屋，讓第一次露營的你，也能自在享受一家人的山林假期。</p>
-          <div className="hero-actions"><a className="button button-primary" href="#booking">立即查詢空位</a><a className="button button-ghost" href="#story">探索可飛鹿</a></div>
+          <div className="hero-actions"><a className="button button-primary" href="#booking">立即查詢空位</a><a className="button button-ghost" href="#facilities">探索可飛鹿</a></div>
         </div>
         <p className="hero-note"><span>24°47' N</span>團露大空間 · 親子共遊 · 免裝備入住</p>
       </section>
+
+      <section className="booking-section booking-featured" id="booking" aria-labelledby="booking-title">
+        <div className="booking-copy"><p className="section-kicker">BOOK YOUR ESCAPE</p><h2 id="booking-title">下一次出走，<br />從選一個日期開始。</h2><p>選擇入住日期與想要的空間，留下聯絡資訊。第一階段採人工確認，避免熱門日期或團露需求重複預訂。</p><div className="booking-steps"><span><b>01</b>送出預約需求</span><span><b>02</b>營區確認空位</span><span><b>03</b>支付 50% 訂金</span></div></div>
+        <BookingForm />
+      </section>
+
+      <StayExplorer />
 
       <section className="intro" id="story" aria-labelledby="story-title">
         <div className="intro-heading"><p className="section-kicker">WELCOME TO COFELU</p><h2 id="story-title">山明水秀，<br /><em>把日常留在山下。</em></h2></div>
@@ -77,26 +78,15 @@ export default function Home() {
         <div className="highlights" aria-label="營區特色數據">{highlights.map((item) => <div className="highlight" key={item.label}><strong>{item.value}</strong><span>{item.label}</span></div>)}</div>
       </section>
 
-      <section className="stay-section" id="stay" aria-labelledby="stay-title">
-        <div className="section-lead"><div><p className="section-kicker">CHOOSE YOUR STAY</p><h2 id="stay-title">今晚，想怎麼住？</h2></div><p>自搭帳的自在，或拎一只旅行袋就入住。每一種選擇，都離山景很近。</p></div>
-        <div className="stay-grid">{stays.map((stay) => <article className="stay-card" key={stay.title}><div className="stay-image"><img src={stay.image} alt={stay.alt} loading="lazy" /></div><div className="stay-card-copy"><small>{stay.tag}</small><h3>{stay.title}</h3><p>{stay.detail}</p><strong>{stay.price}</strong><a href="#booking">查看空位 <span>→</span></a></div></article>)}</div>
-        <p className="price-note">以上為目前公開參考價格；實際可售日期、連假與特殊期間價格以營區確認為準。</p>
-      </section>
-
       <section className="experience" id="facilities" aria-labelledby="facilities-title">
-        <div className="experience-image"><img src="/forest-swing.jpg" alt="可飛鹿營區林間手作鞦韆" loading="lazy" /></div>
+        <div className="experience-image"><img src="/camp-gallery/980015_0.jpg" alt="可飛鹿營區寬廣草地與瞭望台" loading="lazy" /></div>
         <div className="experience-copy"><p className="section-kicker">FOR THE WHOLE FAMILY</p><h2 id="facilities-title">把孩子的笑聲，<br />放進森林裡。</h2><p>大草地、戲水池、玩沙坑與林蔭吊床，讓孩子盡情探索；親子衛浴、冷藏冷凍與完善用電，讓大人放心享受戶外生活。</p><ul>{facilities.map((facility) => <li key={facility}>{facility}</li>)}</ul></div>
       </section>
 
       <section className="facility-gallery" aria-label="營區設施照片">
-        <figure><img src="/facilities.jpg" alt="營區活動廣場、瞭望台、戲水池、沙坑與吊床" loading="lazy" /><figcaption>親子活動與戶外空間</figcaption></figure>
-        <figure><img src="/bathroom.jpg" alt="營區公共男女衛浴與親子浴室" loading="lazy" /><figcaption>男女分區親子衛浴</figcaption></figure>
-        <figure><img src="/amenities.jpg" alt="營區冰箱、飲水機、搬運車與獨立電源設備" loading="lazy" /><figcaption>露營需要的貼心設備</figcaption></figure>
-      </section>
-
-      <section className="booking-section" id="booking" aria-labelledby="booking-title">
-        <div className="booking-copy"><p className="section-kicker">BOOK YOUR ESCAPE</p><h2 id="booking-title">下一次出走，<br />從選一個日期開始。</h2><p>選擇入住日期與想要的空間，留下聯絡資訊。第一階段採人工確認，避免熱門日期或團露需求重複預訂。</p><div className="booking-steps"><span><b>01</b>送出預約需求</span><span><b>02</b>營區確認空位</span><span><b>03</b>支付 50% 訂金</span></div></div>
-        <BookingForm />
+        <figure><img src="/camp-gallery/980012_0.jpg" alt="露營屋山景木造露臺" loading="lazy" /><figcaption>山景露臺與戶外空間</figcaption></figure>
+        <figure><img src="/camp-gallery/980013_0.jpg" alt="露營屋公共吧台與彩繪牆" loading="lazy" /><figcaption>共用吧台與休憩空間</figcaption></figure>
+        <figure><img src="/camp-gallery/980014_0.jpg" alt="山林中的可飛鹿露營屋" loading="lazy" /><figcaption>山林裡的露營屋</figcaption></figure>
       </section>
 
       <section className="faq-section" id="faq" aria-labelledby="faq-title">
@@ -106,7 +96,7 @@ export default function Home() {
 
       <section className="location-section" aria-labelledby="location-title">
         <div className="location-card"><p className="section-kicker">FIND US</p><h2 id="location-title">沿著羅馬公路，<br />遇見山裡的可飛鹿。</h2><p>桃園市復興區奎輝2鄰12號之3<br />桃118線羅馬公路 52.3 公里處</p><div className="location-actions"><a className="button button-primary" href="https://www.google.com/maps/search/?api=1&query=24.798452,121.329184" target="_blank" rel="noreferrer">開啟 Google 地圖</a><a className="text-link" href="#top">回到頁首 ↑</a></div></div>
-        <img src="/lookout.jpg" alt="可飛鹿營區草地與山景瞭望台" loading="lazy" />
+        <img src="/camp-gallery/980015_0.jpg" alt="可飛鹿營區草地與山景瞭望台" loading="lazy" />
       </section>
 
       <footer><div className="footer-brand"><img src="/kofelu-logo.png" alt="可飛鹿營區標誌" width="64" height="64" /><div><strong>可飛鹿營區</strong><span>COFELU CAMP</span></div></div><p>桃園復興・親子露營・免裝備露營屋</p><div className="footer-meta"><small>© {new Date().getFullYear()} 可飛鹿營區</small><a href="/admin">營主後台</a></div></footer>
