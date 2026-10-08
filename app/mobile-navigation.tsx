@@ -20,7 +20,7 @@ export default function MobileNavigation() {
 
   return <>
     <div className="mobile-header-actions">
-      <a className="mobile-book-now" href="#booking" onClick={() => setOpen(false)}>線上預約</a>
+      <a className="mobile-book-now" href="#booking" onClick={() => setOpen(false)}><span>線上預約</span></a>
       <button className={`menu-toggle ${open ? 'open' : ''}`} type="button" aria-label={open ? '關閉導覽選單' : '開啟導覽選單'} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen((value) => !value)}>
         <span /><span /><span />
       </button>

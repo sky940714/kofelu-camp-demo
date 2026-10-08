@@ -62,7 +62,7 @@ export default function Home() {
           <p className="hero-copy">從草地露營到免裝備小屋，讓第一次露營的你，也能自在享受一家人的山林假期。</p>
           <div className="hero-actions"><a className="button button-primary" href="#booking">立即查詢空位</a><a className="button button-ghost" href="#facilities">探索可飛鹿</a></div>
         </div>
-        <p className="hero-note"><span>24°47' N</span>團露大空間 · 親子共遊 · 免裝備入住</p>
+        <p className="hero-note"><span>24°47′ N</span>團露大空間 · 親子共遊 · 免裝備入住</p>
       </section>
 
       <section className="booking-section booking-featured" id="booking" aria-labelledby="booking-title">

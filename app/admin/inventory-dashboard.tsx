@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 
 type InventoryItem = {
@@ -26,14 +27,20 @@ function localDateValue(date = new Date()) {
   return new Date(date.getTime() - offset * 60_000).toISOString().slice(0, 10);
 }
 
+function loadInventory(date: string) {
+  if (typeof window === 'undefined') return initialInventory;
+  const saved = window.localStorage.getItem(`${storageKey}:${date}`);
+  return saved ? JSON.parse(saved) as InventoryItem[] : initialInventory;
+}
+
 export default function InventoryDashboard() {
   const [date, setDate] = useState(localDateValue());
-  const [inventory, setInventory] = useState(initialInventory);
+  const [inventory, setInventory] = useState<InventoryItem[]>(initialInventory);
   const [savedAt, setSavedAt] = useState('');
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(`${storageKey}:${date}`);
-    setInventory(saved ? JSON.parse(saved) : initialInventory);
+    const frame = window.requestAnimationFrame(() => setInventory(loadInventory(date)));
+    return () => window.cancelAnimationFrame(frame);
   }, [date]);
 
   const totals = useMemo(() => inventory.reduce((sum, item) => sum + item.total, 0), [inventory]);
@@ -57,20 +64,26 @@ export default function InventoryDashboard() {
     setSavedAt('已恢復總庫存');
   }
 
+  function changeDate(nextDate: string) {
+    setDate(nextDate);
+    setInventory(loadInventory(nextDate));
+    setSavedAt('');
+  }
+
   return (
     <main className="admin-shell">
       <header className="admin-topbar">
-        <a className="admin-brand" href="/">
+        <Link className="admin-brand" href="/">
           <img src="/kofelu-logo.png" alt="" width="46" height="46" />
           <span><strong>可飛鹿營區</strong><small>營主管理後台</small></span>
-        </a>
-        <a className="back-to-site" href="/">返回官網</a>
+        </Link>
+        <Link className="back-to-site" href="/">返回官網</Link>
       </header>
 
       <section className="admin-content">
         <div className="admin-heading">
           <div><p>INVENTORY</p><h1>房間與營位庫存</h1><span>選擇日期後，調整當日官網可預約的剩餘數量。</span></div>
-          <label className="date-control">管理日期<input type="date" value={date} onChange={(event) => { setSavedAt(''); setDate(event.target.value); }} /></label>
+          <label className="date-control">管理日期<input type="date" value={date} onChange={(event) => changeDate(event.target.value)} /></label>
         </div>
 
         <div className="demo-notice"><strong>展示模式</strong><span>目前資料只保存在這台裝置；正式版會加入安全登入、雲端同步與操作紀錄。</span></div>
