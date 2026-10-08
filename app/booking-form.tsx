@@ -1,6 +1,8 @@
 'use client';
 
 import { FormEvent, useMemo, useState } from 'react';
+import Image from 'next/image';
+import campMap from '../public/camp-map.jpg';
 
 type StayMode = 'tent' | 'rental' | 'cabin' | 'rv';
 type CabinType = '2人房' | '4人房' | '6人房';
@@ -227,7 +229,7 @@ export default function BookingForm() {
       <p className="map-mobile-hint"><span>↔</span> 地圖可上下左右滑動，也可以直接點選下方區域卡片</p>
       <div className={`map-viewport ${zoomed ? 'zoomed' : ''}`}>
         <div className="map-canvas">
-          <img src="/camp-map.jpg" alt="可飛鹿營區導覽圖" />
+          <Image src={campMap} alt="可飛鹿營區導覽圖" sizes="(max-width: 700px) 760px, 920px" priority={false} />
           {mapAreas.map((area) => {
             const enabled = selectableAreas.some((item) => item.id === area.id);
             const selected = selectedIds.includes(area.id);

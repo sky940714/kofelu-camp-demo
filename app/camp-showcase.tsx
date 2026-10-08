@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 const heroSlides = [
   { src:'/camp-gallery/980014_0.jpg', alt:'可飛鹿營區山林中的露營屋外觀' },
@@ -25,7 +26,7 @@ export function HeroCarousel() {
     return () => window.clearInterval(timer);
   }, []);
   return <>
-    <div className="hero-slides" aria-live="polite">{heroSlides.map((slide, index) => <img key={slide.src} className={`hero-image ${active === index ? 'is-active' : ''}`} src={slide.src} alt={active === index ? slide.alt : ''} aria-hidden={active !== index} fetchPriority={index === 0 ? 'high' : 'auto'} />)}</div>
+    <div className="hero-slides" aria-live="polite">{heroSlides.map((slide, index) => <Image key={slide.src} className={`hero-image ${active === index ? 'is-active' : ''}`} src={slide.src} alt={active === index ? slide.alt : ''} aria-hidden={active !== index} fill sizes="(max-width: 700px) 100vw, 62vw" priority={index === 0} />)}</div>
     <div className="hero-carousel-controls" aria-label="首圖輪播控制"><button type="button" onClick={() => setActive((active - 1 + heroSlides.length) % heroSlides.length)} aria-label="上一張">←</button><span>{heroSlides.map((slide, index) => <button key={slide.src} type="button" className={active === index ? 'active' : ''} onClick={() => setActive(index)} aria-label={`顯示第 ${index + 1} 張`} />)}</span><button type="button" onClick={() => setActive((active + 1) % heroSlides.length)} aria-label="下一張">→</button></div>
   </>;
 }
@@ -40,6 +41,6 @@ export function StayExplorer() {
   }, [open]);
   return <div id="stay">
     <button className="stay-float" type="button" onClick={() => setOpen(true)} aria-label="開啟營位與房型介紹"><small>點我看看</small><i>⌂</i><span>今晚<br />怎麼住？</span></button>
-    {open && <div className="stay-explorer-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setOpen(false); }}><section className="stay-explorer" role="dialog" aria-modal="true" aria-labelledby="stay-explorer-title"><header><div><small>CHOOSE YOUR STAY</small><h2 id="stay-explorer-title">今晚，想怎麼住？</h2></div><button type="button" onClick={() => setOpen(false)} aria-label="關閉房型介紹">×</button></header><nav aria-label="房型分類">{stayTypes.map((item,index) => <button type="button" key={item.id} className={active === index ? 'active' : ''} onClick={() => setActive(index)}>{item.nav}</button>)}</nav><div className="stay-explorer-body"><div className="stay-explorer-copy"><p>{stay.eyebrow}</p><h3>{stay.title}</h3><span>{stay.copy}</span><ul>{stay.meta.map((item) => <li key={item}>{item}</li>)}</ul><a href="#booking" onClick={() => setOpen(false)}>選擇日期並預約 <b>→</b></a></div><div className="stay-explorer-gallery">{stay.images.map((image,index) => <figure key={image}><img src={image} alt={`${stay.title}實景照片 ${index + 1}`} /><figcaption>{String(index + 1).padStart(2,'0')} / {String(stay.images.length).padStart(2,'0')}</figcaption></figure>)}</div></div></section></div>}
+    {open && <div className="stay-explorer-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setOpen(false); }}><section className="stay-explorer" role="dialog" aria-modal="true" aria-labelledby="stay-explorer-title"><header><div><small>CHOOSE YOUR STAY</small><h2 id="stay-explorer-title">今晚，想怎麼住？</h2></div><button type="button" onClick={() => setOpen(false)} aria-label="關閉房型介紹">×</button></header><nav aria-label="房型分類">{stayTypes.map((item,index) => <button type="button" key={item.id} className={active === index ? 'active' : ''} onClick={() => setActive(index)}>{item.nav}</button>)}</nav><div className="stay-explorer-body"><div className="stay-explorer-copy"><p>{stay.eyebrow}</p><h3>{stay.title}</h3><span>{stay.copy}</span><ul>{stay.meta.map((item) => <li key={item}>{item}</li>)}</ul><a href="#booking" onClick={() => setOpen(false)}>選擇日期並預約 <b>→</b></a></div><div className="stay-explorer-gallery">{stay.images.map((image,index) => <figure key={image}><Image src={image} alt={`${stay.title}實景照片 ${index + 1}`} fill sizes="(max-width: 700px) 82vw, 36vw" /><figcaption>{String(index + 1).padStart(2,'0')} / {String(stay.images.length).padStart(2,'0')}</figcaption></figure>)}</div></div></section></div>}
   </div>;
 }

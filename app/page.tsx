@@ -2,6 +2,7 @@ import BookingForm from './booking-form';
 import MobileNavigation from './mobile-navigation';
 import SiteInteractions from './site-interactions';
 import { HeroCarousel, StayExplorer } from './camp-showcase';
+import Image from 'next/image';
 
 const highlights = [
   { value: '301–500m', label: '山林海拔' },
@@ -40,7 +41,7 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
       <header className="site-header">
         <a className="brand" href="#top" aria-label="可飛鹿營區首頁">
-          <img src="/kofelu-logo.png" alt="" width="52" height="52" />
+          <Image src="/kofelu-logo.png" alt="" width={64} height={64} sizes="64px" />
           <span><strong>可飛鹿營區</strong><small>COFELU · MOUNTAIN CAMP</small></span>
         </a>
         <nav className="desktop-nav" aria-label="主要導覽">
@@ -79,14 +80,14 @@ export default function Home() {
       </section>
 
       <section className="experience" id="facilities" aria-labelledby="facilities-title">
-        <div className="experience-image"><img src="/camp-gallery/980015_0.jpg" alt="可飛鹿營區寬廣草地與瞭望台" loading="lazy" /></div>
+        <div className="experience-image"><Image src="/camp-gallery/980015_0.jpg" alt="可飛鹿營區寬廣草地與瞭望台" fill sizes="(max-width: 900px) 100vw, 50vw" /></div>
         <div className="experience-copy"><p className="section-kicker">FOR THE WHOLE FAMILY</p><h2 id="facilities-title">把孩子的笑聲，<br />放進森林裡。</h2><p>大草地、戲水池、玩沙坑與林蔭吊床，讓孩子盡情探索；親子衛浴、冷藏冷凍與完善用電，讓大人放心享受戶外生活。</p><ul>{facilities.map((facility) => <li key={facility}>{facility}</li>)}</ul></div>
       </section>
 
       <section className="facility-gallery" aria-label="營區設施照片">
-        <figure><img src="/camp-gallery/980012_0.jpg" alt="露營屋山景木造露臺" loading="lazy" /><figcaption>山景露臺與戶外空間</figcaption></figure>
-        <figure><img src="/camp-gallery/980013_0.jpg" alt="露營屋公共吧台與彩繪牆" loading="lazy" /><figcaption>共用吧台與休憩空間</figcaption></figure>
-        <figure><img src="/camp-gallery/980014_0.jpg" alt="山林中的可飛鹿露營屋" loading="lazy" /><figcaption>山林裡的露營屋</figcaption></figure>
+        <figure><Image src="/camp-gallery/980012_0.jpg" alt="露營屋山景木造露臺" fill sizes="(max-width: 700px) 100vw, 33vw" /><figcaption>山景露臺與戶外空間</figcaption></figure>
+        <figure><Image src="/camp-gallery/980013_0.jpg" alt="露營屋公共吧台與彩繪牆" fill sizes="(max-width: 700px) 100vw, 33vw" /><figcaption>共用吧台與休憩空間</figcaption></figure>
+        <figure><Image src="/camp-gallery/980014_0.jpg" alt="山林中的可飛鹿露營屋" fill sizes="(max-width: 700px) 100vw, 33vw" /><figcaption>山林裡的露營屋</figcaption></figure>
       </section>
 
       <section className="faq-section" id="faq" aria-labelledby="faq-title">
@@ -96,10 +97,10 @@ export default function Home() {
 
       <section className="location-section" aria-labelledby="location-title">
         <div className="location-card"><p className="section-kicker">FIND US</p><h2 id="location-title">沿著羅馬公路，<br />遇見山裡的可飛鹿。</h2><p>桃園市復興區奎輝2鄰12號之3<br />桃118線羅馬公路 52.3 公里處</p><div className="location-actions"><a className="button button-primary" href="https://www.google.com/maps/search/?api=1&query=24.798452,121.329184" target="_blank" rel="noreferrer">開啟 Google 地圖</a><a className="text-link" href="#top">回到頁首 ↑</a></div></div>
-        <img src="/camp-gallery/980015_0.jpg" alt="可飛鹿營區草地與山景瞭望台" loading="lazy" />
+        <div className="location-image"><Image src="/camp-gallery/980015_0.jpg" alt="可飛鹿營區草地與山景瞭望台" fill sizes="(max-width: 900px) 100vw, 50vw" /></div>
       </section>
 
-      <footer><div className="footer-brand"><img src="/kofelu-logo.png" alt="可飛鹿營區標誌" width="64" height="64" /><div><strong>可飛鹿營區</strong><span>COFELU CAMP</span></div></div><p>桃園復興・親子露營・免裝備露營屋</p><div className="footer-meta"><small>© {new Date().getFullYear()} 可飛鹿營區</small><a href="/admin">營主後台</a></div></footer>
+      <footer><div className="footer-brand"><Image src="/kofelu-logo.png" alt="可飛鹿營區標誌" width={64} height={64} sizes="64px" /><div><strong>可飛鹿營區</strong><span>COFELU CAMP</span></div></div><p>桃園復興・親子露營・免裝備露營屋</p><div className="footer-meta"><small>© {new Date().getFullYear()} 可飛鹿營區</small><a href="/admin">營主後台</a></div></footer>
       <a className="mobile-booking" href="#booking" aria-label="立即查詢營位空房"><span>立即預約</span><strong>查詢空位 →</strong></a>
     </main>
   );

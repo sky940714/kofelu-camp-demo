@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 
 type InventoryItem = {
@@ -74,7 +75,7 @@ export default function InventoryDashboard() {
     <main className="admin-shell">
       <header className="admin-topbar">
         <Link className="admin-brand" href="/">
-          <img src="/kofelu-logo.png" alt="" width="46" height="46" />
+          <Image src="/kofelu-logo.png" alt="" width={46} height={46} sizes="46px" />
           <span><strong>可飛鹿營區</strong><small>營主管理後台</small></span>
         </Link>
         <Link className="back-to-site" href="/">返回官網</Link>
