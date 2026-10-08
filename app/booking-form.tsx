@@ -1,7 +1,8 @@
 'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import campMap from '../public/camp-map.jpg';
 
 type StayMode = 'tent' | 'rental' | 'cabin' | 'rv';
@@ -107,7 +108,11 @@ function formatDate(value:string) {
   return `${year}/${month}/${day}`;
 }
 
-export default function BookingForm() {
+type BookingFormProps = { standaloneStep?: 1 | 2 | 3 };
+const bookingStorageKey = 'kofelu-booking-progress';
+
+export default function BookingForm({ standaloneStep }:BookingFormProps) {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [checkin, setCheckin] = useState('');
   const [checkout, setCheckout] = useState('');
@@ -121,6 +126,37 @@ export default function BookingForm() {
   const [cabinType, setCabinType] = useState<CabinType>('2人房');
   const [zoomed, setZoomed] = useState(false);
   const [booking, setBooking] = useState<{ name:string; phone:string; note:string } | null>(null);
+  const [hydrated, setHydrated] = useState(!standaloneStep);
+  const currentStep = standaloneStep ?? step;
+
+  useEffect(() => {
+    if (!standaloneStep) return;
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        const saved = JSON.parse(sessionStorage.getItem(bookingStorageKey) || '{}');
+        if (typeof saved.checkin === 'string') setCheckin(saved.checkin);
+        if (typeof saved.checkout === 'string') setCheckout(saved.checkout);
+        if (stayOptions.some((option) => option.id === saved.mode)) setMode(saved.mode);
+        if (Array.isArray(saved.selectedIds)) setSelectedIds(saved.selectedIds.filter((id:unknown) => typeof id === 'string'));
+        if (typeof saved.units === 'number') setUnits(saved.units);
+        if (typeof saved.guests === 'number') setGuests(saved.guests);
+        if (['2人房','4人房','6人房'].includes(saved.cabinType)) setCabinType(saved.cabinType);
+        if (standaloneStep === 2 && (!saved.checkin || !saved.checkout)) router.replace('/booking/date');
+        if (standaloneStep === 3 && (!saved.checkin || !saved.checkout || !saved.selectedIds?.length)) router.replace('/booking/date');
+      } catch {
+        sessionStorage.removeItem(bookingStorageKey);
+        if (standaloneStep > 1) router.replace('/booking/date');
+      } finally {
+        setHydrated(true);
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [router, standaloneStep]);
+
+  useEffect(() => {
+    if (!standaloneStep || !hydrated) return;
+    sessionStorage.setItem(bookingStorageKey, JSON.stringify({ checkin, checkout, mode, selectedIds, units, guests, cabinType }));
+  }, [standaloneStep, hydrated, checkin, checkout, mode, selectedIds, units, guests, cabinType]);
 
   const selectableAreas = useMemo(() => mapAreas.filter((area) => {
     if (mode === 'tent' || mode === 'rental') return area.kind === 'camp' || area.kind === 'gravel';
@@ -193,13 +229,15 @@ export default function BookingForm() {
 
   function proceedToMap() {
     if (!checkin || !checkout) return;
-    setStep(2);
+    if (standaloneStep) router.push('/booking/map');
+    else setStep(2);
   }
 
   function proceedToDetails() {
     if (!selectedIds.length) return;
     if (units > maxUnits) return;
-    setStep(3);
+    if (standaloneStep) router.push('/booking/contact');
+    else setStep(3);
   }
 
   function handleSubmit(event:FormEvent<HTMLFormElement>) {
@@ -212,19 +250,28 @@ export default function BookingForm() {
     });
   }
 
+  if (!hydrated) return <div className="booking-wizard booking-loading" aria-live="polite">正在載入預約資料…</div>;
+
+  function goToStep(number:number) {
+    if (standaloneStep) {
+      const routes = ['/booking/date','/booking/map','/booking/contact'];
+      if (number <= currentStep) router.push(routes[number - 1]);
+    } else if (number < step) setStep(number);
+  }
+
   return <div className="booking-wizard">
-    <div className="wizard-progress" aria-label={`預約步驟 ${step}，共3步`}>
-      {[1,2,3].map((number) => <button key={number} type="button" className={step === number ? 'active' : step > number ? 'done' : ''} onClick={() => number < step && setStep(number)}><span>{step > number ? '✓' : number}</span><small>{number === 1 ? '日期方式' : number === 2 ? '地圖選區' : '聯絡確認'}</small></button>)}
+    <div className="wizard-progress" aria-label={`預約步驟 ${currentStep}，共3步`}>
+      {[1,2,3].map((number) => <button key={number} type="button" className={currentStep === number ? 'active' : currentStep > number ? 'done' : ''} onClick={() => goToStep(number)} disabled={number > currentStep}><span>{currentStep > number ? '✓' : number}</span><small>{number === 1 ? '日期方式' : number === 2 ? '地圖選區' : '聯絡確認'}</small></button>)}
     </div>
 
-    {step === 1 && <section className="wizard-panel" aria-labelledby="wizard-step-one">
+    {currentStep === 1 && <section className="wizard-panel" aria-labelledby="wizard-step-one">
       <div className="wizard-heading"><small>STEP 01</small><h3 id="wizard-step-one">先決定怎麼住</h3><p>選好日期與住宿方式，再從營區圖挑選偏好的區域。</p></div>
       <div className="date-choice"><label>入住／退房日期<button type="button" className={`date-range-field ${checkin ? 'has-value' : ''}`} onClick={() => setCalendarOpen(true)} aria-haspopup="dialog"><span className="date-calendar-icon" aria-hidden="true">▦</span><span><small>入住</small><strong>{checkin ? formatDate(checkin) : '選擇日期'}</strong></span><i>→</i><span><small>退房</small><strong>{checkout ? formatDate(checkout) : '選擇日期'}</strong></span>{nights > 0 ? <em>{nights} 晚</em> : <em className="date-open-hint">開啟日曆</em>}</button></label></div>
       <div className="stay-choice-grid">{stayOptions.map((option) => <button key={option.id} type="button" className={mode === option.id ? 'selected' : ''} onClick={() => changeMode(option.id)}><i>{option.id === 'tent' ? '△' : option.id === 'rental' ? '⌂' : option.id === 'cabin' ? '▦' : '▰'}</i><strong>{option.title}</strong><span>{option.subtitle}</span></button>)}</div>
       <button className="wizard-next" type="button" disabled={!checkin || !checkout} onClick={proceedToMap}>進入營區地圖 <span>→</span></button>
     </section>}
 
-    {step === 2 && <section className="wizard-panel map-step" aria-labelledby="wizard-step-two">
+    {currentStep === 2 && <section className="wizard-panel map-step" aria-labelledby="wizard-step-two">
       <div className="wizard-heading map-heading"><div><small>STEP 02</small><h3 id="wizard-step-two">直接點選偏好區域</h3><p>{mode === 'tent' || mode === 'rental' ? '可複選多個區域；區內確切位置由營區安排。' : '請選擇一個偏好的區域。'}</p></div><button type="button" className="map-zoom" onClick={() => setZoomed((value) => !value)}>{zoomed ? '縮小全圖' : '放大地圖'}</button></div>
       <p className="map-mobile-hint"><span>↔</span> 地圖可上下左右滑動，也可以直接點選下方區域卡片</p>
       <div className={`map-viewport ${zoomed ? 'zoomed' : ''}`}>
@@ -240,13 +287,13 @@ export default function BookingForm() {
       <div className="map-selection-list">{selectableAreas.map((area) => <button type="button" key={area.id} className={selectedIds.includes(area.id) ? 'selected' : ''} onClick={() => toggleArea(area)}><strong>{area.label}</strong><span>{area.detail}</span></button>)}</div>
       {!!selectedAreas.length && <div className="selection-summary"><div><small>已選區域</small><strong>{areaText}</strong><span>合計可容納約 {selectedCapacity} {mode === 'cabin' ? '間' : mode === 'rv' ? '位' : '帳'}</span></div>{mode === 'cabin' && <label>房型<select value={cabinType} onChange={(event) => { setCabinType(event.target.value as CabinType); setUnits(1); }}><option>2人房</option><option>4人房</option><option>6人房</option></select></label>}<label>需求數量<div className="unit-stepper"><button type="button" onClick={() => setUnits(Math.max(1, units - 1))}>−</button><strong>{units}</strong><button type="button" onClick={() => setUnits(units + 1)}>＋</button></div></label></div>}
       {selectedAreas.length > 0 && units > maxUnits && <p className="wizard-error">所選區域最多可安排 {maxUnits} {mode === 'cabin' ? '間' : mode === 'rv' ? '位' : '帳'}，請調整數量或增加區域。</p>}
-      <div className="wizard-actions"><button type="button" className="wizard-back" onClick={() => setStep(1)}>← 返回修改</button><button type="button" className="wizard-next" disabled={!selectedAreas.length || units > maxUnits} onClick={proceedToDetails}>填寫聯絡資料 <span>→</span></button></div>
+      <div className="wizard-actions"><button type="button" className="wizard-back" onClick={() => standaloneStep ? router.push('/booking/date') : setStep(1)}>← 返回修改</button><button type="button" className="wizard-next" disabled={!selectedAreas.length || units > maxUnits} onClick={proceedToDetails}>填寫聯絡資料 <span>→</span></button></div>
     </section>}
 
-    {step === 3 && <section className="wizard-panel" aria-labelledby="wizard-step-three">
+    {currentStep === 3 && <section className="wizard-panel" aria-labelledby="wizard-step-three">
       <div className="wizard-heading"><small>STEP 03</small><h3 id="wizard-step-three">最後留下聯絡方式</h3><p>營主會在官方LINE確認實際空位、價格與50%訂金。</p></div>
       <div className="booking-review"><span>{formatDate(checkin)} → {formatDate(checkout)}・{nights}晚</span><strong>{modeLabel}{mode === 'cabin' ? ` ${cabinType}` : ''} × {units}</strong><small>{areaText}｜區內位置由營區安排</small></div>
-      <form className="wizard-contact" onSubmit={handleSubmit}><div className="field-row"><label>入住人數<input type="number" min="1" max="100" value={guests} onChange={(event) => setGuests(Number(event.target.value))} required /></label><label>聯絡人<input name="name" autoComplete="name" placeholder="王小明" required /></label></div><label>手機號碼<input name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="0912 345 678" pattern="[0-9+() -]{8,20}" required /></label><label>備註需求<textarea name="note" rows={3} placeholder="例如：租帳篷、攜帶寵物、希望相鄰安排" /></label><label className="consent"><input type="checkbox" required /><span>我已閱讀入住與取消規則，並同意營區使用以上資料聯繫本次預約。</span></label><div className="wizard-actions"><button type="button" className="wizard-back" onClick={() => setStep(2)}>← 返回地圖</button><button className="wizard-next" type="submit">確認預約內容 <span>→</span></button></div></form>
+      <form className="wizard-contact" onSubmit={handleSubmit}><div className="field-row"><label>入住人數<input type="number" min="1" max="100" value={guests} onChange={(event) => setGuests(Number(event.target.value))} required /></label><label>聯絡人<input name="name" autoComplete="name" placeholder="王小明" required /></label></div><label>手機號碼<input name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="0912 345 678" pattern="[0-9+() -]{8,20}" required /></label><label>備註需求<textarea name="note" rows={3} placeholder="例如：租帳篷、攜帶寵物、希望相鄰安排" /></label><label className="consent"><input type="checkbox" required /><span>我已閱讀入住與取消規則，並同意營區使用以上資料聯繫本次預約。</span></label><div className="wizard-actions"><button type="button" className="wizard-back" onClick={() => standaloneStep ? router.push('/booking/map') : setStep(2)}>← 返回地圖</button><button className="wizard-next" type="submit">確認預約內容 <span>→</span></button></div></form>
     </section>}
 
     {calendarOpen && <div className="calendar-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setCalendarOpen(false); }}><section className="range-calendar" role="dialog" aria-modal="true" aria-labelledby="calendar-title"><header><div><small>SELECT YOUR STAY</small><h3 id="calendar-title">選擇入住與退房日期</h3><p>{checkin && !checkout ? '請選擇退房日期（限週五、六、日及國定例假日）' : '先選入住日期，再選退房日期'}</p></div><button type="button" aria-label="關閉日期選擇" onClick={() => setCalendarOpen(false)}>×</button></header><div className="calendar-nav"><button type="button" aria-label="上個月" onClick={() => shiftMonth(-1)}>←</button><span>{checkin ? formatDate(checkin) : '入住'} <b>→</b> {checkout ? formatDate(checkout) : '退房'}{nights > 0 && <em>{nights} 晚</em>}</span><button type="button" aria-label="下個月" onClick={() => shiftMonth(1)}>→</button></div><div className="calendar-months"><CalendarMonth month={calendarMonth} checkin={checkin} checkout={checkout} onSelect={selectDate} /><CalendarMonth month={new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1)} checkin={checkin} checkout={checkout} onSelect={selectDate} /></div><div className="calendar-legend"><span><i className="weekend-dot" />五、六、日可選入住與退房</span><span><i className="holiday-dot" />國定例假日</span><span><i className="locked-dot" />平日團體請洽 LINE</span></div></section></div>}

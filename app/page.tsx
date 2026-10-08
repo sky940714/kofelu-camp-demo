@@ -1,4 +1,3 @@
-import BookingForm from './booking-form';
 import MobileNavigation from './mobile-navigation';
 import SiteInteractions from './site-interactions';
 import { HeroCarousel, StayExplorer } from './camp-showcase';
@@ -45,11 +44,11 @@ export default function Home() {
           <span><strong>可飛鹿營區</strong><small>COFELU · MOUNTAIN CAMP</small></span>
         </a>
         <nav className="desktop-nav" aria-label="主要導覽">
-          <a href="#booking">線上預約</a><a href="#stay">營位與房型</a><a href="#facilities">設施體驗</a><a href="#faq">入住須知</a>
+          <a href="/booking/date">線上預約</a><a href="#stay">營位與房型</a><a href="#facilities">設施體驗</a><a href="#faq">入住須知</a>
         </nav>
         <div className="header-actions">
           <a className="admin-entry" href="/admin" aria-label="進入營主管理後台">營主後台</a>
-          <a className="header-cta" href="#booking">查詢空位</a>
+          <a className="header-cta" href="/booking/date">查詢空位</a>
         </div>
         <MobileNavigation />
       </header>
@@ -61,14 +60,14 @@ export default function Home() {
           <p className="eyebrow">COFELU CAMP · TAOYUAN</p>
           <h1 id="hero-title">走進山裡，<br /><em>住進一晚好風景。</em></h1>
           <p className="hero-copy">從草地露營到免裝備小屋，讓第一次露營的你，也能自在享受一家人的山林假期。</p>
-          <div className="hero-actions"><a className="button button-primary" href="#booking">立即查詢空位</a><a className="button button-ghost" href="#facilities">探索可飛鹿</a></div>
+          <div className="hero-actions"><a className="button button-primary" href="/booking/date">立即查詢空位</a><a className="button button-ghost" href="#facilities">探索可飛鹿</a></div>
         </div>
         <p className="hero-note"><span>24°47′ N</span>團露大空間 · 親子共遊 · 免裝備入住</p>
       </section>
 
       <section className="booking-section booking-featured" id="booking" aria-labelledby="booking-title">
         <div className="booking-copy"><p className="section-kicker">BOOK YOUR ESCAPE</p><h2 id="booking-title">下一次出走，<br />從選一個日期開始。</h2><p>選擇入住日期與想要的空間，留下聯絡資訊。第一階段採人工確認，避免熱門日期或團露需求重複預訂。</p><div className="booking-steps"><span><b>01</b>送出預約需求</span><span><b>02</b>營區確認空位</span><span><b>03</b>支付 50% 訂金</span></div></div>
-        <BookingForm />
+        <div className="booking-entry-card"><small>3 STEPS · ABOUT 2 MINUTES</small><h3>開始安排你的山林假期</h3><p>日期、住宿方式與營區位置會分成三個清楚頁面，手機操作更輕鬆。</p><a className="wizard-next" href="/booking/date">開始預約 <span>→</span></a></div>
       </section>
 
       <StayExplorer />
@@ -101,7 +100,7 @@ export default function Home() {
       </section>
 
       <footer><div className="footer-brand"><Image src="/kofelu-logo.png" alt="可飛鹿營區標誌" width={64} height={64} sizes="64px" /><div><strong>可飛鹿營區</strong><span>COFELU CAMP</span></div></div><p>桃園復興・親子露營・免裝備露營屋</p><div className="footer-meta"><small>© {new Date().getFullYear()} 可飛鹿營區</small><a href="/admin">營主後台</a></div></footer>
-      <a className="mobile-booking" href="#booking" aria-label="立即查詢營位空房"><span>立即預約</span><strong>查詢空位 →</strong></a>
+      <a className="mobile-booking" href="/booking/date" aria-label="立即查詢營位空房"><span>立即預約</span><strong>查詢空位 →</strong></a>
     </main>
   );
 }
