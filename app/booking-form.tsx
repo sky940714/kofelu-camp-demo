@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import campMap from '../public/camp-map.jpg';
@@ -18,6 +18,8 @@ type MapArea = {
   w: number;
   h: number;
 };
+
+type MapDisplay = 'map' | 'list';
 
 const lineOfficialId = process.env.NEXT_PUBLIC_LINE_OFFICIAL_ID || '@484cyfiv';
 
@@ -125,6 +127,9 @@ export default function BookingForm({ standaloneStep }:BookingFormProps) {
   const [guests, setGuests] = useState(2);
   const [cabinType, setCabinType] = useState<CabinType>('2人房');
   const [zoomed, setZoomed] = useState(false);
+  const [mapDisplay, setMapDisplay] = useState<MapDisplay>('map');
+  const [focusedAreaId, setFocusedAreaId] = useState('');
+  const areaListRef = useRef<HTMLDivElement>(null);
   const [booking, setBooking] = useState<{ name:string; phone:string; note:string } | null>(null);
   const [hydrated, setHydrated] = useState(!standaloneStep);
   const currentStep = standaloneStep ?? step;
@@ -164,6 +169,7 @@ export default function BookingForm({ standaloneStep }:BookingFormProps) {
     return area.kind === 'rv';
   }), [mode]);
   const selectedAreas = mapAreas.filter((area) => selectedIds.includes(area.id));
+  const focusedArea = selectableAreas.find((area) => area.id === focusedAreaId) || selectedAreas.at(-1) || selectableAreas[0];
   const selectedCapacity = selectedAreas.reduce((sum, area) => sum + area.capacity, 0);
   const nights = differenceInNights(checkin, checkout);
   const areaText = selectedAreas.map((area) => area.label).join('、');
@@ -192,17 +198,23 @@ export default function BookingForm({ standaloneStep }:BookingFormProps) {
   function changeMode(next:StayMode) {
     setMode(next);
     setSelectedIds([]);
+    setFocusedAreaId('');
     setUnits(1);
   }
 
   function toggleArea(area:MapArea) {
     if (!selectableAreas.some((item) => item.id === area.id)) return;
+    setFocusedAreaId(area.id);
     if (mode === 'tent' || mode === 'rental') {
       setSelectedIds((ids) => ids.includes(area.id) ? ids.filter((id) => id !== area.id) : [...ids, area.id]);
     } else {
       setSelectedIds([area.id]);
       setUnits(1);
     }
+  }
+
+  function scrollAreaCards(direction:-1 | 1) {
+    areaListRef.current?.scrollBy({ left:direction * Math.min(360, areaListRef.current.clientWidth * .78), behavior:'smooth' });
   }
 
   function selectDate(key:string, locked:boolean) {
@@ -272,19 +284,29 @@ export default function BookingForm({ standaloneStep }:BookingFormProps) {
     </section>}
 
     {currentStep === 2 && <section className="wizard-panel map-step" aria-labelledby="wizard-step-two">
-      <div className="wizard-heading map-heading"><div><small>STEP 02</small><h3 id="wizard-step-two">直接點選偏好區域</h3><p>{mode === 'tent' || mode === 'rental' ? '可複選多個區域；區內確切位置由營區安排。' : '請選擇一個偏好的區域。'}</p></div><button type="button" className="map-zoom" onClick={() => setZoomed((value) => !value)}>{zoomed ? '縮小全圖' : '放大地圖'}</button></div>
-      <p className="map-mobile-hint"><span>↔</span> 地圖可上下左右滑動，也可以直接點選下方區域卡片</p>
-      <div className={`map-viewport ${zoomed ? 'zoomed' : ''}`}>
+      <div className="wizard-heading map-heading"><div><small>STEP 02</small><h3 id="wizard-step-two">選擇偏好區域</h3><p>{mode === 'tent' || mode === 'rental' ? '可複選多個區域，實際營位由營區確認後安排。' : '請選擇一個偏好區域，實際房號或位置由營區安排。'}</p></div></div>
+      <div className="map-toolbar">
+        <div className="map-view-switch" role="group" aria-label="選擇瀏覽方式"><button type="button" className={mapDisplay === 'map' ? 'active' : ''} aria-pressed={mapDisplay === 'map'} onClick={() => setMapDisplay('map')}>地圖選區</button><button type="button" className={mapDisplay === 'list' ? 'active' : ''} aria-pressed={mapDisplay === 'list'} onClick={() => setMapDisplay('list')}>區域清單</button></div>
+        {mapDisplay === 'map' && <button type="button" className="map-zoom" onClick={() => setZoomed((value) => !value)}>{zoomed ? '縮小全圖' : '放大地圖'}</button>}
+      </div>
+      <div className="map-status-legend" aria-label="區域狀態說明"><span><i className="available" />可提出申請</span><span><i className="chosen" />已選擇</span><span><i className="unavailable" />非此住宿類型</span></div>
+      {mapDisplay === 'map' && <p className="map-mobile-hint"><span>↔</span> 可拖曳查看地圖；點選色塊即可查看區域資訊</p>}
+      {mapDisplay === 'map' && <div className={`map-viewport ${zoomed ? 'zoomed' : ''}`}>
         <div className="map-canvas">
           <Image src={campMap} alt="可飛鹿營區導覽圖" sizes="(max-width: 700px) 760px, 920px" priority={false} />
           {mapAreas.map((area) => {
             const enabled = selectableAreas.some((item) => item.id === area.id);
             const selected = selectedIds.includes(area.id);
-            return <button key={area.id} type="button" disabled={!enabled} aria-pressed={selected} aria-label={`${area.label}，${area.detail}`} className={`map-hotspot ${enabled ? 'enabled' : ''} ${selected ? 'selected' : ''}`} style={{ left:`${area.x}%`, top:`${area.y}%`, width:`${area.w}%`, height:`${area.h}%` }} onClick={() => toggleArea(area)}><span>{selected ? '✓ ' : ''}{area.label}</span></button>;
+            return <button key={area.id} type="button" disabled={!enabled} aria-pressed={selected} aria-label={`${area.label}，${area.detail}`} className={`map-hotspot ${enabled ? 'enabled' : ''} ${selected ? 'selected' : ''} ${focusedAreaId === area.id ? 'focused' : ''}`} style={{ left:`${area.x}%`, top:`${area.y}%`, width:`${area.w}%`, height:`${area.h}%` }} onClick={() => toggleArea(area)}><span>{selected ? '✓ ' : ''}{area.label}</span></button>;
           })}
         </div>
+      </div>}
+      <div className={`map-card-browser ${mapDisplay === 'list' ? 'is-list' : ''}`}>
+        {mapDisplay === 'map' && <button type="button" className="map-card-arrow previous" aria-label="查看前面的區域" onClick={() => scrollAreaCards(-1)}>‹</button>}
+        <div ref={areaListRef} className={`map-selection-list ${mapDisplay === 'list' ? 'is-list' : ''}`} onWheel={(event) => { if (mapDisplay === 'map' && Math.abs(event.deltaY) > Math.abs(event.deltaX)) { event.currentTarget.scrollLeft += event.deltaY; } }}>{selectableAreas.map((area) => <button type="button" key={area.id} className={`${selectedIds.includes(area.id) ? 'selected' : ''} ${focusedArea?.id === area.id ? 'focused' : ''}`} aria-pressed={selectedIds.includes(area.id)} onClick={() => toggleArea(area)}><span className="area-card-status">{selectedIds.includes(area.id) ? '✓ 已選擇' : '可提出申請'}</span><strong>{area.label}</strong><span>{area.detail}</span><small>最多約 {area.capacity} {mode === 'cabin' ? '間' : mode === 'rv' ? '位' : '帳'}</small></button>)}</div>
+        {mapDisplay === 'map' && <button type="button" className="map-card-arrow next" aria-label="查看更多區域" onClick={() => scrollAreaCards(1)}>›</button>}
       </div>
-      <div className="map-selection-list">{selectableAreas.map((area) => <button type="button" key={area.id} className={selectedIds.includes(area.id) ? 'selected' : ''} onClick={() => toggleArea(area)}><strong>{area.label}</strong><span>{area.detail}</span></button>)}</div>
+      {focusedArea && <aside className="map-area-detail" aria-live="polite"><div className="map-area-detail-copy"><span className="area-availability">● 可提出申請</span><h4>{focusedArea.label}</h4><p>{focusedArea.detail}</p><small>可安排約 {focusedArea.capacity} {mode === 'cabin' ? '間' : mode === 'rv' ? '位' : '帳'}・實際位置由營區確認後安排</small></div><button type="button" className={selectedIds.includes(focusedArea.id) ? 'selected' : ''} onClick={() => toggleArea(focusedArea)}>{selectedIds.includes(focusedArea.id) ? '✓ 已選擇此區' : '選擇此區域'}</button></aside>}
       {!!selectedAreas.length && <div className="selection-summary"><div><small>已選區域</small><strong>{areaText}</strong><span>合計可容納約 {selectedCapacity} {mode === 'cabin' ? '間' : mode === 'rv' ? '位' : '帳'}</span></div>{mode === 'cabin' && <label>房型<select value={cabinType} onChange={(event) => { setCabinType(event.target.value as CabinType); setUnits(1); }}><option>2人房</option><option>4人房</option><option>6人房</option></select></label>}<label>需求數量<div className="unit-stepper"><button type="button" onClick={() => setUnits(Math.max(1, units - 1))}>−</button><strong>{units}</strong><button type="button" onClick={() => setUnits(units + 1)}>＋</button></div></label></div>}
       {selectedAreas.length > 0 && units > maxUnits && <p className="wizard-error">所選區域最多可安排 {maxUnits} {mode === 'cabin' ? '間' : mode === 'rv' ? '位' : '帳'}，請調整數量或增加區域。</p>}
       <div className="wizard-actions"><button type="button" className="wizard-back" onClick={() => standaloneStep ? router.push('/booking/date') : setStep(1)}>← 返回修改</button><button type="button" className="wizard-next" disabled={!selectedAreas.length || units > maxUnits} onClick={proceedToDetails}>填寫聯絡資料 <span>→</span></button></div>
