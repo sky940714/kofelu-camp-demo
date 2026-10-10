@@ -642,6 +642,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .wizard-panel input:focus,.wizard-panel select:focus,.wizard-panel textarea:focus { border-color:#66816d; box-shadow:0 0 0 3px rgb(102 129 109 / 12%); }
 .weekday-rule { display:grid; grid-template-columns:auto 1fr; gap:12px; margin-top:14px; border-left:3px solid #b88b51; padding:12px 14px; background:#f4ede0; color:#735d3f; font-size:12px; line-height:1.65; }
 .weekday-rule strong { white-space:nowrap; }
+.booking-rule-note { display:flex; align-items:flex-start; gap:9px; margin:12px 0 0; border-left:3px solid #b88b51; padding:11px 13px; background:#f4ede0; color:#735d3f; font-size:11px; line-height:1.65; }
+.booking-rule-note strong { flex:0 0 auto; color:#4f432f; }
+.cabin-extra-note { border-left-color:#66816d; background:#e9efe8; color:#52685a; }
 .stay-choice-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:22px; }
 .stay-choice-grid button { display:grid; grid-template-columns:42px 1fr; grid-template-rows:auto auto; gap:3px 12px; align-items:center; border:1px solid #d6d9d1; border-radius:3px; padding:17px; background:white; color:#334a3d; cursor:pointer; text-align:left; transition:.25s ease; }
 .stay-choice-grid button:hover { transform:translateY(-2px); border-color:#7f9583; box-shadow:0 10px 25px rgb(46 65 53 / 8%); }

@@ -303,7 +303,9 @@ export default function BookingForm({ standaloneStep }:BookingFormProps) {
     {currentStep === 1 && <section className="wizard-panel" aria-labelledby="wizard-step-one">
       <div className="wizard-heading"><small>STEP 01</small><h3 id="wizard-step-one">先決定怎麼住</h3><p>選好日期與住宿方式，再從營區圖挑選偏好的區域。</p></div>
       <div className="date-choice"><label>入住／退房日期<button type="button" className={`date-range-field ${checkin ? 'has-value' : ''}`} onClick={() => setCalendarOpen(true)} aria-haspopup="dialog"><span className="date-calendar-icon" aria-hidden="true">▦</span><span><small>入住</small><strong>{checkin ? formatDate(checkin) : '選擇日期'}</strong></span><i>→</i><span><small>退房</small><strong>{checkout ? formatDate(checkout) : '選擇日期'}</strong></span>{nights > 0 ? <em>{nights} 晚</em> : <em className="date-open-hint">開啟日曆</em>}</button></label></div>
+      <p className="booking-rule-note"><strong>一般散客</strong> 星期五、六、日可預約；星期一至星期四僅受理 10 帳以上團體。</p>
       <div className="stay-choice-grid">{stayOptions.map((option) => <button key={option.id} type="button" className={mode === option.id ? 'selected' : ''} onClick={() => changeMode(option.id)}><i>{option.id === 'tent' ? '△' : option.id === 'rental' ? '⌂' : option.id === 'cabin' ? '▦' : '▰'}</i><strong>{option.title}</strong><span>{option.subtitle}</span></button>)}</div>
+      {mode === 'cabin' && <p className="booking-rule-note cabin-extra-note"><strong>露營屋加人</strong> 每位成人加收 NT$800，已包含雙人充氣床墊、棉被 1 件、枕頭 2 個及盥洗用品；實際安排由營區確認。</p>}
       <button className="wizard-next" type="button" disabled={!checkin || !checkout} onClick={proceedToMap}>進入營區地圖 <span>→</span></button>
     </section>}
 

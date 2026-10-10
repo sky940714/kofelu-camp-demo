@@ -12,9 +12,9 @@ const heroSlides = [
 
 const stayTypes = [
   { id:'grass', nav:'草皮露營', title:'草皮露營', eyebrow:'BRING YOUR OWN HOME', copy:'A–L 區依山勢分層，保留每帳自在呼吸的距離。客人可指定區域，實際位置由營區安排。', meta:['約 72 帳','6 × 8 公尺','集中停車'], images:['/camp-gallery/980015_0.jpg','/camp-gallery/980014_0.jpg'] },
-  { id:'two', nav:'2 人房', title:'2 人露營屋', eyebrow:'A QUIET STAY FOR TWO', copy:'營一區與營二區各有三間雙人房，房內提供冷氣、床寢與獨立休憩空間，適合兩人輕裝入住。', meta:['共 6 間','雙人床','冷氣設備'], images:['/camp-gallery/980007_0.jpg','/camp-gallery/980008_0.jpg','/camp-gallery/980009_0.jpg','/camp-gallery/980001_0.jpg','/camp-gallery/980002_0.jpg','/camp-gallery/980003_0.jpg'] },
-  { id:'four', nav:'4 人房', title:'4 人露營屋', eyebrow:'ROOM FOR THE FAMILY', copy:'營一區與營二區各有兩間四人房，寬敞雙床配置，讓親子與好友同行也能舒適休息。', meta:['共 4 間','雙床配置','冷氣設備'], images:['/camp-gallery/980010_0.jpg','/camp-gallery/980011_0.jpg','/camp-gallery/979998_0.jpg','/camp-gallery/979999_0.jpg'] },
-  { id:'six', nav:'6 人房', title:'6 人露營屋', eyebrow:'STAY TOGETHER', copy:'營一區與營二區各有一間六人房，適合家庭與小團體同住，保留共享時光也兼顧睡眠空間。', meta:['共 2 間','最多 6 人','團體入住'], images:['/camp-gallery/980006_0.jpg','/camp-gallery/980000_0.jpg'] },
+  { id:'two', nav:'2 人房', title:'2 人露營屋', eyebrow:'A QUIET STAY FOR TWO', copy:'營一區與營二區各有三間雙人房，房內提供冷氣、床寢與獨立休憩空間。加人每位成人 NT$800，已包含充氣床墊與寢具用品。', meta:['共 6 間','雙人床','加人 NT$800／位'], images:['/camp-gallery/980007_0.jpg','/camp-gallery/980008_0.jpg','/camp-gallery/980009_0.jpg','/camp-gallery/980001_0.jpg','/camp-gallery/980002_0.jpg','/camp-gallery/980003_0.jpg'] },
+  { id:'four', nav:'4 人房', title:'4 人露營屋', eyebrow:'ROOM FOR THE FAMILY', copy:'營一區與營二區各有兩間四人房，寬敞雙床配置。加人每位成人 NT$800，已包含充氣床墊、棉被、枕頭與盥洗用品。', meta:['共 4 間','雙床配置','加人 NT$800／位'], images:['/camp-gallery/980010_0.jpg','/camp-gallery/980011_0.jpg','/camp-gallery/979998_0.jpg','/camp-gallery/979999_0.jpg'] },
+  { id:'six', nav:'6 人房', title:'6 人露營屋', eyebrow:'STAY TOGETHER', copy:'營一區與營二區各有一間六人房，適合家庭與小團體同住。加人每位成人 NT$800，已包含充氣床墊與寢具用品。', meta:['共 2 間','標準入住 6 人','加人 NT$800／位'], images:['/camp-gallery/980006_0.jpg','/camp-gallery/980000_0.jpg'] },
   { id:'rv', nav:'露營車', title:'露營車營位', eyebrow:'DRIVE INTO NATURE', copy:'營區設有四個露營車專屬營位。車型、尺寸、用電與設備需求，請於預約時交由營主確認。', meta:['限定 4 位','規格先確認','山林景觀'], images:['/camp-gallery/980014_0.jpg','/camp-gallery/980012_0.jpg','/camp-gallery/980013_0.jpg'] },
 ];
 
