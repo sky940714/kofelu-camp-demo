@@ -3,11 +3,12 @@
 import { useEffect, useState } from 'react';
 
 const links = [
-  ['關於營區', '#story'],
-  ['營位與房型', '#stay'],
-  ['設施體驗', '#facilities'],
-  ['互動地圖預約', '#booking'],
-  ['入住須知', '#faq'],
+  ['關於營區', '/#story'],
+  ['營位與房型', '/#stay'],
+  ['預約與退費', '/guide/booking'],
+  ['房型介紹', '/guide/rooms'],
+  ['租帳方案', '/guide/rental'],
+  ['入住須知', '/guide/rules'],
 ];
 
 export default function MobileNavigation() {
@@ -27,7 +28,7 @@ export default function MobileNavigation() {
     </div>
     <nav id="mobile-navigation" className={`mobile-menu ${open ? 'open' : ''}`} aria-label="手機版主要導覽" aria-hidden={!open}>
       <p>EXPLORE COFELU</p>
-      {links.map(([label, href], index) => <a href={href} key={href} onClick={() => setOpen(false)}><small>0{index + 1}</small><span>{label}</span><b>→</b></a>)}
+      {links.map(([label, href], index) => <a href={href} key={href} onClick={() => setOpen(false)}><small>{String(index + 1).padStart(2, '0')}</small><span>{label}</span><b>→</b></a>)}
       <div><span>桃園復興・羅馬公路</span><span>山林露營・親子假期</span></div>
     </nav>
   </>;

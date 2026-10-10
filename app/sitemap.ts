@@ -1,3 +1,6 @@
 import type { MetadataRoute } from 'next';
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-export default function sitemap(): MetadataRoute.Sitemap { return [{ url: siteUrl, lastModified: new Date(), changeFrequency: 'weekly', priority: 1, images: [`${siteUrl}/hero-camp.jpg`, `${siteUrl}/lookout.jpg`, `${siteUrl}/room-2.jpg`] }]; }
+export default function sitemap(): MetadataRoute.Sitemap { return [
+  { url: siteUrl, lastModified: new Date(), changeFrequency: 'weekly', priority: 1, images: [`${siteUrl}/hero-camp.jpg`, `${siteUrl}/lookout.jpg`, `${siteUrl}/room-2.jpg`] },
+  ...['booking','rooms','rental','rules'].map((page) => ({ url:`${siteUrl}/guide/${page}`, lastModified:new Date(), changeFrequency:'monthly' as const, priority:.7 })),
+]; }
