@@ -26,8 +26,8 @@ const lineOfficialId = process.env.NEXT_PUBLIC_LINE_OFFICIAL_ID || '@484cyfiv';
 const mapAreas: MapArea[] = [
   { id:'a', label:'A區', kind:'camp', capacity:6, detail:'草皮營位・鄰近營本部', x:56.3, y:34.0, w:34.0, h:4.0 },
   { id:'b', label:'B區', kind:'camp', capacity:7, detail:'草皮營位・鄰近營本部', x:56.3, y:38.2, w:34.0, h:4.0 },
-  { id:'c', label:'C區', kind:'camp', capacity:8, detail:'草皮營位・鄰近親子設施', x:56.3, y:47.0, w:34.0, h:4.0 },
-  { id:'d', label:'D區', kind:'camp', capacity:8, detail:'草皮營位・鄰近私人果園', x:56.3, y:51.1, w:34.0, h:4.0 },
+  { id:'c', label:'C區', kind:'camp', capacity:8, detail:'草皮營位・鄰近親子設施', x:57.2, y:48.4, w:34.6, h:3.9 },
+  { id:'d', label:'D區', kind:'camp', capacity:8, detail:'草皮營位・鄰近私人果園', x:57.2, y:52.8, w:34.6, h:3.9 },
   { id:'e', label:'E區', kind:'camp', capacity:8, detail:'草皮營位・樟樹林旁', x:20.4, y:46.6, w:29.3, h:4.0 },
   { id:'f', label:'F區', kind:'camp', capacity:7, detail:'草皮營位・營二區中段', x:20.4, y:50.8, w:29.3, h:4.0 },
   { id:'g', label:'G區', kind:'camp', capacity:6, detail:'草皮營位・營二區中段', x:20.4, y:54.8, w:29.3, h:4.0 },
@@ -130,6 +130,8 @@ export default function BookingForm({ standaloneStep }:BookingFormProps) {
   const [mapDisplay, setMapDisplay] = useState<MapDisplay>('map');
   const [focusedAreaId, setFocusedAreaId] = useState('');
   const areaListRef = useRef<HTMLDivElement>(null);
+  const mapViewportRef = useRef<HTMLDivElement>(null);
+  const mapCanvasRef = useRef<HTMLDivElement>(null);
   const [booking, setBooking] = useState<{ name:string; phone:string; note:string } | null>(null);
   const [hydrated, setHydrated] = useState(!standaloneStep);
   const currentStep = standaloneStep ?? step;
@@ -217,6 +219,28 @@ export default function BookingForm({ standaloneStep }:BookingFormProps) {
     areaListRef.current?.scrollBy({ left:direction * Math.min(360, areaListRef.current.clientWidth * .78), behavior:'smooth' });
   }
 
+  function revealAreaOnMap(area:MapArea) {
+    setMapDisplay('map');
+    setFocusedAreaId(area.id);
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+      const viewport = mapViewportRef.current;
+      const canvas = mapCanvasRef.current;
+      if (!viewport || !canvas) return;
+      const centerX = canvas.clientWidth * ((area.x + area.w / 2) / 100);
+      const centerY = canvas.clientHeight * ((area.y + area.h / 2) / 100);
+      viewport.scrollTo({
+        left:centerX - viewport.clientWidth / 2,
+        top:centerY - viewport.clientHeight / 2,
+        behavior:'smooth',
+      });
+    }));
+  }
+
+  function selectAreaFromCard(area:MapArea) {
+    toggleArea(area);
+    revealAreaOnMap(area);
+  }
+
   function selectDate(key:string, locked:boolean) {
     if (locked) {
       setWeekdayNotice(true);
@@ -291,8 +315,8 @@ export default function BookingForm({ standaloneStep }:BookingFormProps) {
       </div>
       <div className="map-status-legend" aria-label="區域狀態說明"><span><i className="available" />可提出申請</span><span><i className="chosen" />已選擇</span><span><i className="unavailable" />非此住宿類型</span></div>
       {mapDisplay === 'map' && <p className="map-mobile-hint"><span>↔</span> 可拖曳查看地圖；點選色塊即可查看區域資訊</p>}
-      {mapDisplay === 'map' && <div className={`map-viewport ${zoomed ? 'zoomed' : ''}`}>
-        <div className="map-canvas">
+      {mapDisplay === 'map' && <div ref={mapViewportRef} className={`map-viewport ${zoomed ? 'zoomed' : ''}`}>
+        <div ref={mapCanvasRef} className="map-canvas">
           <Image src={campMap} alt="可飛鹿營區導覽圖" sizes="(max-width: 700px) 760px, 920px" priority={false} />
           {mapAreas.map((area) => {
             const enabled = selectableAreas.some((item) => item.id === area.id);
@@ -303,7 +327,7 @@ export default function BookingForm({ standaloneStep }:BookingFormProps) {
       </div>}
       <div className={`map-card-browser ${mapDisplay === 'list' ? 'is-list' : ''}`}>
         {mapDisplay === 'map' && <button type="button" className="map-card-arrow previous" aria-label="查看前面的區域" onClick={() => scrollAreaCards(-1)}>‹</button>}
-        <div ref={areaListRef} className={`map-selection-list ${mapDisplay === 'list' ? 'is-list' : ''}`} onWheel={(event) => { if (mapDisplay === 'map' && Math.abs(event.deltaY) > Math.abs(event.deltaX)) { event.currentTarget.scrollLeft += event.deltaY; } }}>{selectableAreas.map((area) => <button type="button" key={area.id} className={`${selectedIds.includes(area.id) ? 'selected' : ''} ${focusedArea?.id === area.id ? 'focused' : ''}`} aria-pressed={selectedIds.includes(area.id)} onClick={() => toggleArea(area)}><span className="area-card-status">{selectedIds.includes(area.id) ? '✓ 已選擇' : '可提出申請'}</span><strong>{area.label}</strong><span>{area.detail}</span><small>最多約 {area.capacity} {mode === 'cabin' ? '間' : mode === 'rv' ? '位' : '帳'}</small></button>)}</div>
+        <div ref={areaListRef} className={`map-selection-list ${mapDisplay === 'list' ? 'is-list' : ''}`} onWheel={(event) => { if (mapDisplay === 'map' && Math.abs(event.deltaY) > Math.abs(event.deltaX)) { event.currentTarget.scrollLeft += event.deltaY; } }}>{selectableAreas.map((area) => <button type="button" key={area.id} className={`${selectedIds.includes(area.id) ? 'selected' : ''} ${focusedArea?.id === area.id ? 'focused' : ''}`} aria-pressed={selectedIds.includes(area.id)} onClick={() => selectAreaFromCard(area)}><span className="area-card-status">{selectedIds.includes(area.id) ? '✓ 已選擇' : '可提出申請'}</span><strong>{area.label}</strong><span>{area.detail}</span><small>最多約 {area.capacity} {mode === 'cabin' ? '間' : mode === 'rv' ? '位' : '帳'}</small></button>)}</div>
         {mapDisplay === 'map' && <button type="button" className="map-card-arrow next" aria-label="查看更多區域" onClick={() => scrollAreaCards(1)}>›</button>}
       </div>
       {focusedArea && <aside className="map-area-detail" aria-live="polite"><div className="map-area-detail-copy"><span className="area-availability">● 可提出申請</span><h4>{focusedArea.label}</h4><p>{focusedArea.detail}</p><small>可安排約 {focusedArea.capacity} {mode === 'cabin' ? '間' : mode === 'rv' ? '位' : '帳'}・實際位置由營區確認後安排</small></div><button type="button" className={selectedIds.includes(focusedArea.id) ? 'selected' : ''} onClick={() => toggleArea(focusedArea)}>{selectedIds.includes(focusedArea.id) ? '✓ 已選擇此區' : '選擇此區域'}</button></aside>}
