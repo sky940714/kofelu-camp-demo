@@ -716,6 +716,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .booking-review strong { color:#294637; font-family:"Noto Serif TC",serif; font-size:19px; }
 .wizard-contact { display:grid; gap:16px; }
 .wizard-contact textarea { resize:vertical; }
+.line-data-note { display:flex; gap:10px; margin:0; border-left:3px solid #6f8c78; padding:11px 13px; background:#edf2ec; color:#66766b; font-size:10px; line-height:1.65; }
+.line-data-note strong { flex:0 0 auto; color:#345543; }
 .wizard-contact .consent { display:flex; }
 .wizard-contact .consent input { min-height:0; }
 
@@ -823,6 +825,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .wizard-contact .field-row { grid-template-columns:1fr; }
   .wizard-panel input,.wizard-panel select,.wizard-panel textarea { min-height:50px; font-size:16px; }
   .wizard-contact textarea { min-height:112px; }
+  .line-data-note { display:grid; gap:3px; font-size:11px; }
   .wizard-contact .consent { align-items:flex-start; gap:10px; font-size:12px; line-height:1.6; }
   .wizard-contact .consent input { flex:0 0 22px; width:22px; height:22px; margin-top:1px; }
   .booking-review { padding:13px 14px; }
