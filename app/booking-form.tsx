@@ -3,7 +3,6 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import campMap from '../public/camp-map.jpg';
 
 type StayMode = 'tent' | 'rental' | 'cabin' | 'rv';
 type CabinType = '2人房' | '4人房' | '6人房';
@@ -321,7 +320,7 @@ export default function BookingForm({ standaloneStep }:BookingFormProps) {
       {mapDisplay === 'map' && <p className="map-mobile-hint"><span>↔</span> 可拖曳查看地圖；點選色塊即可查看區域資訊</p>}
       {mapDisplay === 'map' && <div ref={mapViewportRef} className={`map-viewport ${zoomed ? 'zoomed' : ''}`}>
         <div ref={mapCanvasRef} className="map-canvas">
-          <Image src={campMap} alt="可飛鹿營區導覽圖" sizes="(max-width: 700px) 760px, 920px" priority={false} />
+          <Image src="/camp-map.jpg" width={1108} height={1510} alt="可飛鹿營區導覽圖" sizes="(max-width: 700px) 760px, 920px" priority={false} />
           {mapAreas.map((area) => {
             const enabled = selectableAreas.some((item) => item.id === area.id);
             const selected = selectedIds.includes(area.id);
